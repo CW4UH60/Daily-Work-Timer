@@ -25,6 +25,21 @@ jobs:
         shell: pwsh
         run: ./scripts/Test-ScriptSyntax.ps1
 
+      - name: Install PSScriptAnalyzer
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name PSScriptAnalyzer -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Run PowerShell security analysis
+        shell: pwsh
+        run: |
+          Invoke-ScriptAnalyzer `
+            -Path ./src `
+            -Recurse `
+            -Settings ./PSScriptAnalyzerSettings.psd1 `
+            -EnableExit
+
       - name: Install Pester
         shell: pwsh
         run: |
