@@ -12,9 +12,10 @@ BeforeAll {
 
 Describe 'Local storage helpers' {
     It 'replaces a file atomically and keeps the prior value when backup is requested' {
-        $path = Join-Path $TestDrive 'state.json'
+    Set-WorkTimerTestStorage -Root $TestDrive
+    $path = Join-Path $TestDrive 'state.json'
 
-        Write-FileAtomic -Path $path -Content 'first'
+    Write-FileAtomic -Path $path -Content 'first'
         Write-FileAtomic -Path $path -Content 'second' -KeepBackup
 
         [IO.File]::ReadAllText($path) | Should -Be 'second'
