@@ -1,4 +1,3 @@
-\
 [CmdletBinding()]
 param(
     [string[]]$Path = @('src/*.ps1', 'tests/*.ps1', 'scripts/*.ps1')
