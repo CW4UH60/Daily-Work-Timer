@@ -45,7 +45,3 @@ For user-visible changes, update `README.md` and add a concise entry under **Unr
 - Describe the validation you performed and its results.
 - Do not include sensitive or personally identifying information in issues, commits, test fixtures, screenshots, or logs.
 - Ensure GitHub Actions completes successfully.
-
-## License
-
-This repository does not currently include a license. Do not assume permission to redistribute or reuse code beyond the rights granted by the repository owner. A maintainer must add an explicit license before external contributions can be accepted under defined terms.
