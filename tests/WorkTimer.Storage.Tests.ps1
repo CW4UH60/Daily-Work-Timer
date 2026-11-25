@@ -1,7 +1,8 @@
 
-. (Join-Path $PSScriptRoot 'TestSupport.ps1')
-
 BeforeAll {
+    # Pester discovers each test file before it runs it. Load the test harness during
+    # the run phase so its setup and helper functions are available to the tests.
+    . (Join-Path $PSScriptRoot 'TestSupport.ps1')
     Initialize-WorkTimerTestEnvironment
     Import-WorkTimerFunctions -Name @(
         'Initialize-Storage', 'Write-FileAtomic', 'Get-PropertyValue', 'New-List', 'New-Id',
