@@ -1,0 +1,25 @@
+name: Validate
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  powershell-syntax:
+    name: PowerShell syntax
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Display PowerShell version
+        shell: pwsh
+        run: $PSVersionTable.PSVersion.ToString()
+
+      - name: Parse application source
+        shell: pwsh
+        run: ./tests/WorkTimer.Tests.ps1
