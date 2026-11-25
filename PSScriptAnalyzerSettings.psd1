@@ -1,6 +1,4 @@
 @{
-    Severity = @('Error', 'Warning')
-
     IncludeRules = @(
         'PSAvoidUsingAllowUnencryptedAuthentication',
         'PSAvoidUsingBrokenHashAlgorithms',
@@ -10,11 +8,11 @@
         'PSAvoidUsingPlainTextForPassword',
         'PSAvoidUsingUsernameAndPasswordParams',
         'PSAvoidUsingWMICmdlet',
-        'PSUsePSCredentialType',
-        'PSUseShouldProcessForStateChangingFunctions'
+        'PSUsePSCredentialType'
     )
 
-    ExcludeRules = @(
-        # Add only documented, reviewed exclusions here.
+    Severity = @(
+        'Error',
+        'Warning'
     )
 }
