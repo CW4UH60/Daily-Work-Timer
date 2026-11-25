@@ -1,0 +1,36 @@
+name: Validate Work Timer
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: PowerShell validation
+    runs-on: windows-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Show PowerShell version
+        shell: pwsh
+        run: $PSVersionTable
+
+      - name: Validate PowerShell syntax
+        shell: pwsh
+        run: ./scripts/Test-ScriptSyntax.ps1
+
+      - name: Install Pester
+        shell: pwsh
+        run: |
+          Set-PSRepository -Name PSGallery -InstallationPolicy Trusted
+          Install-Module -Name Pester -MinimumVersion 6.0.0 -Scope CurrentUser -Force -SkipPublisherCheck
+
+      - name: Run Pester tests
+        shell: pwsh
+        run: Invoke-Pester -Path ./tests -CI -Output Detailed
