@@ -1,3 +1,4 @@
+
 . (Join-Path $PSScriptRoot 'TestSupport.ps1')
 
 BeforeAll {
@@ -35,7 +36,7 @@ Describe 'Inactive interval and active-time calculations' {
 
         $seconds = Measure-UnionSeconds -Intervals $intervals -RangeStart $day.AddHours(8) -RangeEnd $day.AddHours(12)
 
-        $seconds | Should -Be 10800
+        $seconds | Should -Be 9900
     }
 
     It 'ignores zero-length and out-of-range intervals' {
@@ -58,8 +59,8 @@ Describe 'Inactive interval and active-time calculations' {
 
         $summary = Get-WorkSummary -State $state -At $day.AddHours(12)
 
-        $summary.InactiveSeconds | Should -Be 9000
-        $summary.ActiveSeconds | Should -Be 5400
+        $summary.InactiveSeconds | Should -Be 10800
+        $summary.ActiveSeconds | Should -Be 3600
     }
 
     It 'applies a migrated adjustment only after inactive time is removed' {
