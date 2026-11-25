@@ -1,17 +1,34 @@
-# Development Notes
+# Development Guide
 
-## Application Architecture
+## Prerequisites
 
-Work Timer is intentionally delivered as a single PowerShell application file: `src/WorkTimer.ps1`. The script embeds limited C# interop code for Windows APIs, session notifications, taskbar identity, and shortcut metadata. Keep embedded code and PowerShell changes coordinated.
+- Windows
+- PowerShell 7.2 or later
+- Git
+- Pester 5.x for the automated test suite
 
-## Local Data Boundary
+## Run the application
 
-Runtime data is stored outside the repository in `%APPDATA%\PowerShellPresenceWorkTimer`. The JSON history file is the source of truth; the Excel workbook is generated from that history. Never use production records as test fixtures or commit them to this repository.
+```powershell
+pwsh -NoProfile -ExecutionPolicy Bypass -File .\src\WorkTimer.ps1
+```
 
-## Validation Scope
+The application requires Windows Forms and Windows input/session APIs. Run it in an interactive Windows desktop session.
 
-`scripts/Test-ScriptSyntax.ps1` uses the PowerShell parser to catch syntax errors without launching Windows Forms. GitHub Actions runs this parser validation on a Windows runner. It does not replace manual testing of UI, presence detection, session events, recovery behavior, file locking, shortcuts, or Excel compatibility.
+## Run validation
 
-## Versioning and Releases
+```powershell
+pwsh -NoProfile -File .\scripts\Test-ScriptSyntax.ps1
+Invoke-Pester -Path .\tests -Output Detailed
+```
 
-No release process is defined yet. Before publishing releases, establish an explicit versioning scheme, release notes process, code-signing approach, distribution method, and license.
+The parser script validates every `.ps1` file under `src`, `tests`, and `scripts` by default. The Pester suite loads selected non-UI function definitions from the application source without starting the GUI.
+
+## Design boundaries
+
+- `src/WorkTimer.ps1` is the application entry point and currently contains both UI and business logic.
+- Tests focus on deterministic business logic and file-package output. They do not automate native Windows Forms controls or real user input/session transitions.
+- Do not use real `%APPDATA%\PowerShellPresenceWorkTimer` data for automated tests. Tests use Pester's temporary test drive.
+- The Excel export is generated as an Office Open XML ZIP package. Test both its package contents and, when changing export behavior, its opening in Microsoft Excel or another compatible spreadsheet application.
+
+See [TESTING.md](TESTING.md) for the required manual validation areas.
