@@ -62,19 +62,19 @@ foreach ($file in $files) {
         [ref]$errors
     )
 
-    if ($errors.Count -eq 0) {
-        Write-Host "PASS  $($file.FullName)"
-        continue
+    foreach ($error in $errors) {
+        [void]$failures.Add(('{0}:{1}:{2} {3}' -f $file.FullName, $error.Extent.StartLineNumber, $error.Extent.StartColumnNumber, $error.Message))
     }
 
-    foreach ($error in $errors) {
-        [void]$failures.Add((
-            '{0}:{1}:{2} {3}' -f
-            $file.FullName,
-            $error.Extent.StartLineNumber,
-            $error.Extent.StartColumnNumber,
-            $error.Message
-        ))
+    # A lone backslash is syntactically valid PowerShell but attempts to invoke a
+    # command named "\\" at runtime. Treat it as a source error to catch accidental
+    # leading backslashes in generated files.
+    foreach ($match in @(Select-String -LiteralPath $file.FullName -Pattern '^\s*\\\s*$' -AllMatches)) {
+        [void]$failures.Add(('{0}:{1}:1 Unexpected standalone backslash command.' -f $file.FullName, $match.LineNumber))
+    }
+
+    if ($errors.Count -eq 0) {
+        Write-Host "PASS  $($file.FullName)"
     }
 }
 
